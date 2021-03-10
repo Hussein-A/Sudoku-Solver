@@ -2,11 +2,12 @@ import PySimpleGUI as sg
 from typing import List
 import copy
 
+
 class UserMenu:
     def __init__(self):
         sg.theme('DarkAmber')
         # All the stuff inside your window.
-        row = [sg.Input(size = (3,3)) for i in range(9)]
+        row = [sg.Input(size=(3, 3)) for i in range(9)]
 
         self.layout = [[sg.Text('Enter digits 1-9 for each cell')]]
         for i in range(9):
@@ -23,8 +24,9 @@ class UserMenu:
                 break
             elif event == 'Solve':
                 puzzle = values
+                break
 
-        #solution to puzzle will be given in a popup
+        # solution to puzzle will be given in a popup
         window.close()
 
         def format_input():
@@ -32,8 +34,12 @@ class UserMenu:
             grid = []
             row = []
             count = 0
-            for elem in values:
-                row.append(elem)
+            for key, val in values.items():
+                if len(val) == 0:
+                    row.append(0)
+                else:
+                    row.append(int(val) % 10)
+
                 count += 1
                 if count % 9 == 0:
                     grid.append(row)
@@ -49,4 +55,3 @@ class UserMenu:
 
     def output_solution(self):
         pass
-
