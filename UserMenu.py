@@ -26,13 +26,26 @@ class UserMenu:
 
         #solution to puzzle will be given in a popup
         window.close()
-        return puzzle
+
+        def format_input():
+            ROW_SIZE = 9
+            grid = []
+            row = []
+            count = 0
+            for elem in values:
+                row.append(elem)
+                count += 1
+                if count % 9 == 0:
+                    grid.append(row)
+                    row = []
+                    count = 0
+
+            return grid
+
+        return format_input()
 
     def output_error(self, error: str) -> None:
-        error_layout = []
-
-
-
+        pass
 
     def output_solution(self):
         pass
