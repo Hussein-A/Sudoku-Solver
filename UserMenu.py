@@ -1,6 +1,5 @@
 import PySimpleGUI as sg
 from typing import List
-import copy
 
 
 class UserMenu:
