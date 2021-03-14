@@ -36,3 +36,85 @@ class Solver:
                         seen[int(elem)] = True
 
             return True
+
+    def __init__(self, board):
+        self.empty_cells = 0
+        self.board = board
+
+    def solve(self):
+        # count empty cells and note down first empty cell to start
+        first_empty_cell = None
+        for i in range(9):
+            for j in range(9):
+                if self.board[i][j] is '.':
+                    self.empty_cells += 1
+                if first_empty_cell is None:
+                    first_empty_cell = (i, j)
+
+        def solve_cell(start):
+
+            def get_next_empty_cell_from(cell):
+                row, clmn = cell
+                for i in range(row, 9):
+
+                    # finish up the row we are in now starting from the starting clmn otherwise start at the 0 clmn
+                    start_clmn = 0 if i is not row else clmn + 1
+
+                    for j in range(start_clmn, 9):
+                        if self.board[i][j] is '.':
+                            return i, j
+
+            def get_candidates(cell):
+                seen = [False] * 10
+                seen[0] = True  # 0 is not a valid digit to be used
+
+                def get_candidates_from_row():
+                    row, clmn = cell
+                    for elem in self.board[row]:
+                        if elem is not '.':
+                            seen[int(elem)] = True
+
+                def get_candidates_from_column():
+                    row, clmn = cell
+                    for i in range(9):
+                        if self.board[i][clmn] is not '.':
+                            seen[int(self.board[i][clmn])] = True
+
+                def get_candidates_from_box():
+                    # reset our start search to the top left corner of the 3x3 box we are in
+                    row, clmn = cell
+                    start_row = (row // 3) * 3
+                    start_clmn = (clmn // 3) * 3
+
+                    for i in range(start_row, start_row + 3):
+                        for j in range(start_clmn, start_clmn + 3):
+                            elem = board[i][j]
+                            if elem is not '.':
+                                seen[int(elem)] = True
+
+                get_candidates_from_row()
+                get_candidates_from_column()
+                get_candidates_from_box()
+
+                return [i for i in range(10) if not seen[i]]
+
+            for candidate in get_candidates(start):
+                row, clmn = start
+                self.board[row][clmn] = str(candidate)
+
+                self.empty_cells -= 1
+                if self.empty_cells is 0:
+                    return  # we just filled in the last empty cell
+                else:
+                    # try candidate
+                    solve_cell(get_next_empty_cell_from(start))
+                    if self.empty_cells is 0:
+                        return  # we've fully solved the puzzle, there's no need to try other candidates
+
+                    # reset the cell
+                    self.board[row][clmn] = '.'
+                    self.empty_cells += 1
+
+        solve_cell(first_empty_cell)
+
+
