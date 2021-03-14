@@ -57,10 +57,6 @@ class Solver:
 
             return validate_rows() and validate_columns() and validate_boxes()
 
-
-
-
-
     def __init__(self, board):
         self.empty_cells = 0
         self.board = board
@@ -70,10 +66,10 @@ class Solver:
         first_empty_cell = None
         for i in range(9):
             for j in range(9):
-                if self.board[i][j] is '.':
+                if self.board[i][j] == '.':
                     self.empty_cells += 1
-                if first_empty_cell is None:
-                    first_empty_cell = (i, j)
+                    if first_empty_cell == None:
+                        first_empty_cell = (i, j)
 
         def solve_cell(start):
 
@@ -82,10 +78,10 @@ class Solver:
                 for i in range(row, 9):
 
                     # finish up the row we are in now starting from the starting clmn otherwise start at the 0 clmn
-                    start_clmn = 0 if i is not row else clmn + 1
+                    start_clmn = 0 if i != row else clmn + 1
 
                     for j in range(start_clmn, 9):
-                        if self.board[i][j] is '.':
+                        if self.board[i][j] == '.':
                             return i, j
 
             def get_candidates(cell):
@@ -95,13 +91,13 @@ class Solver:
                 def get_candidates_from_row():
                     row, clmn = cell
                     for elem in self.board[row]:
-                        if elem is not '.':
+                        if elem != '.':
                             seen[int(elem)] = True
 
                 def get_candidates_from_column():
                     row, clmn = cell
                     for i in range(9):
-                        if self.board[i][clmn] is not '.':
+                        if self.board[i][clmn] != '.':
                             seen[int(self.board[i][clmn])] = True
 
                 def get_candidates_from_box():
@@ -112,8 +108,8 @@ class Solver:
 
                     for i in range(start_row, start_row + 3):
                         for j in range(start_clmn, start_clmn + 3):
-                            elem = board[i][j]
-                            if elem is not '.':
+                            elem = self.board[i][j]
+                            if elem != '.':
                                 seen[int(elem)] = True
 
                 get_candidates_from_row()
@@ -127,12 +123,12 @@ class Solver:
                 self.board[row][clmn] = str(candidate)
 
                 self.empty_cells -= 1
-                if self.empty_cells is 0:
+                if self.empty_cells == 0:
                     return  # we just filled in the last empty cell
                 else:
                     # try candidate
                     solve_cell(get_next_empty_cell_from(start))
-                    if self.empty_cells is 0:
+                    if self.empty_cells == 0:
                         return  # we've fully solved the puzzle, there's no need to try other candidates
 
                     # reset the cell
@@ -141,4 +137,23 @@ class Solver:
 
         solve_cell(first_empty_cell)
 
+        return self.board
 
+
+unsolved = \
+    [
+        ["5","3",".",".","7",".",".",".","."],
+        ["6",".",".","1","9","5",".",".","."],
+        [".","9","8",".",".",".",".","6","."],
+        ["8",".",".",".","6",".",".",".","3"],
+        ["4",".",".","8",".","3",".",".","1"],
+        ["7",".",".",".","2",".",".",".","6"],
+        [".","6",".",".",".",".","2","8","."],
+        [".",".",".","4","1","9",".",".","5"],
+        [".",".",".",".","8",".",".","7","9"]
+    ]
+
+solver = Solver(unsolved)
+solved = solver.solve()
+
+print(solved)
