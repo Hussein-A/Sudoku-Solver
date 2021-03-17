@@ -1,7 +1,6 @@
 import PySimpleGUI as sg
 from typing import List
 
-
 class UserMenu:
     def __init__(self):
         sg.theme('DarkAmber')

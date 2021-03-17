@@ -139,8 +139,17 @@ class Solver:
 
         return self.board
 
+    def __repr__(self):
+        """
+        Used mainly for unit testing purposes to avoid coupling with GUI
+        """
+        res = []
+        for row in self.board:
+            res.append('[' + ','.join(row) + ']')
+        res = '[\n' + ',\n'.join(res) + '\n]'
+        return res
 
-unsolved = \
+board = \
     [
         ["5","3",".",".","7",".",".",".","."],
         ["6",".",".","1","9","5",".",".","."],
@@ -153,7 +162,9 @@ unsolved = \
         [".",".",".",".","8",".",".","7","9"]
     ]
 
-solver = Solver(unsolved)
+solver = Solver(board)
 solved = solver.solve()
+
+print(solver.__repr__())
 
 print(solved)
