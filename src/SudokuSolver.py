@@ -2,60 +2,6 @@ from typing import List
 
 
 class Solver:
-    class Validator:
-        def is_valid(self, board):
-
-            def validate_rows():
-                for row in board:
-                    seen = [False] * 10
-
-                    for elem in row:
-                        if not elem.isdigit():
-                            continue
-
-                        if seen[int(elem)]:
-                            return False
-                        else:
-                            seen[int(elem)] = True
-
-                return True
-
-            def validate_columns():
-                for clmn in range(9):
-                    seen = [False] * 10
-
-                    for row in range(9):
-                        elem = board[row][clmn]
-                        if not board[row][clmn].isdigit():
-                            continue
-
-                        if seen[int(elem)]:
-                            return False
-                        else:
-                            seen[int(elem)] = True
-
-                return True
-
-            def validate_boxes():
-                # identify each box by the top left corner
-                for i in range(0, 9, 3):
-                    for j in range(0, 9, 3):
-                        # now we are at the top left corner of the box to check
-                        seen = [False] * 10
-                        for row in range(i, i + 3):
-                            for clmn in range(j, j + 3):
-                                elem = board[row][clmn]
-                                if not board[row][clmn].isdigit():
-                                    continue
-
-                                if seen[int(elem)]:
-                                    return False
-                                else:
-                                    seen[int(elem)] = True
-
-                return True
-
-            return validate_rows() and validate_columns() and validate_boxes()
 
     def __init__(self, board):
         self.empty_cells = 0

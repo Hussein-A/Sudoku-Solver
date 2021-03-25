@@ -2,6 +2,7 @@ import PySimpleGUI as sg
 import copy
 from typing import List
 
+
 class UserMenu:
     def __init__(self):
         sg.theme('DarkAmber')
@@ -16,7 +17,72 @@ class UserMenu:
     def get_sudoku(self) -> List[List[int]]:
         puzzle = []
         window = sg.Window('Sudoku Solver', self.layout)
+
         def format_and_verify_input():
+            '''
+            Firstly formats the input for use with SudokuSolver.py which expects a List[List[int]] rather than
+            List[List[str]] as given by the PySimpleGui.
+            Secondly verifies that the input is correctly entered. Input to cells cannot be strings and must be integers
+            Also that:
+                1. Each row must contain the digits 1-9 without repetition.
+                2. Each column must contain the digits 1-9 without repetition.
+                3. Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without repetition.
+
+            :return: None
+            '''
+            def is_valid(board):
+
+                def validate_rows():
+                    for row in board:
+                        seen = [False] * 10
+
+                        for elem in row:
+                            if elem == 0:
+                                continue
+                            if seen[elem]:
+                                return False
+                            else:
+                                seen[elem] = True
+
+                    return True
+
+                def validate_columns():
+                    for clmn in range(9):
+                        seen = [False] * 10
+
+                        for row in range(9):
+                            elem = board[row][clmn]
+                            if elem == 0:
+                                continue
+
+                            if seen[elem]:
+                                return False
+                            else:
+                                seen[elem] = True
+
+                    return True
+
+                def validate_boxes():
+                    # identify each box by the top left corner
+                    for i in range(0, 9, 3):
+                        for j in range(0, 9, 3):
+                            # now we are at the top left corner of the box to check
+                            seen = [False] * 10
+                            for row in range(i, i + 3):
+                                for clmn in range(j, j + 3):
+                                    elem = board[row][clmn]
+                                    if elem == 0:
+                                        continue
+
+                                    if seen[elem]:
+                                        return False
+                                    else:
+                                        seen[elem] = True
+
+                    return True
+
+                return validate_rows() and validate_columns() and validate_boxes()
+
             ROW_SIZE = 9
             grid = []
             row = []
@@ -28,11 +94,13 @@ class UserMenu:
                     row.append(int(val) % 10)
 
                 count += 1
-                if count % 9 == 0:
+                if count % ROW_SIZE == 0:
                     grid.append(row)
                     row = []
                     count = 0
 
+            if not is_valid(grid):
+                raise Exception('Repeated digit in board.')
             return grid
 
         while True:
@@ -44,19 +112,14 @@ class UserMenu:
                     puzzle = values
                     format_and_verify_input()
                     break
-            except ValueError:
-                
-
+            except Exception as error:
+                error_window = sg.Window('ERROR',
+                                         [[sg.Text(error.args[0])], [sg.Button('OK')]])
+                error_event, error_values = error_window.read()
+                if error_event == sg.WIN_CLOSED or error_event == 'OK':
+                    continue
 
         # solution to puzzle will be given in a popup
         window.close()
 
-
-
         return format_and_verify_input()
-
-    def output_error(self, error: str) -> None:
-        pass
-
-    def output_solution(self):
-        pass
