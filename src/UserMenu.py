@@ -16,19 +16,7 @@ class UserMenu:
     def get_sudoku(self) -> List[List[int]]:
         puzzle = []
         window = sg.Window('Sudoku Solver', self.layout)
-
-        while True:
-            event, values = window.read()
-            if event == sg.WIN_CLOSED or event == 'Cancel':
-                break
-            elif event == 'Solve':
-                puzzle = values
-                break
-
-        # solution to puzzle will be given in a popup
-        window.close()
-
-        def format_input():
+        def format_and_verify_input():
             ROW_SIZE = 9
             grid = []
             row = []
@@ -47,7 +35,25 @@ class UserMenu:
 
             return grid
 
-        return format_input()
+        while True:
+            try:
+                event, values = window.read()
+                if event == sg.WIN_CLOSED or event == 'Cancel':
+                    break
+                elif event == 'Solve':
+                    puzzle = values
+                    format_and_verify_input()
+                    break
+            except ValueError:
+                
+
+
+        # solution to puzzle will be given in a popup
+        window.close()
+
+
+
+        return format_and_verify_input()
 
     def output_error(self, error: str) -> None:
         pass
