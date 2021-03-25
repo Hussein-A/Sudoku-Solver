@@ -66,9 +66,9 @@ class Solver:
         first_empty_cell = None
         for i in range(9):
             for j in range(9):
-                if self.board[i][j] == '.':
+                if self.board[i][j] == 0:
                     self.empty_cells += 1
-                    if first_empty_cell == None:
+                    if first_empty_cell is None:
                         first_empty_cell = (i, j)
 
         def solve_cell(start):
@@ -81,7 +81,7 @@ class Solver:
                     start_clmn = 0 if i != row else clmn + 1
 
                     for j in range(start_clmn, 9):
-                        if self.board[i][j] == '.':
+                        if self.board[i][j] == 0:
                             return i, j
 
             def get_candidates(cell):
@@ -91,14 +91,14 @@ class Solver:
                 def get_candidates_from_row():
                     row, clmn = cell
                     for elem in self.board[row]:
-                        if elem != '.':
-                            seen[int(elem)] = True
+                        if elem != 0:
+                            seen[elem] = True
 
                 def get_candidates_from_column():
                     row, clmn = cell
                     for i in range(9):
-                        if self.board[i][clmn] != '.':
-                            seen[int(self.board[i][clmn])] = True
+                        if self.board[i][clmn] != 0:
+                            seen[self.board[i][clmn]] = True
 
                 def get_candidates_from_box():
                     # reset our start search to the top left corner of the 3x3 box we are in
@@ -109,8 +109,8 @@ class Solver:
                     for i in range(start_row, start_row + 3):
                         for j in range(start_clmn, start_clmn + 3):
                             elem = self.board[i][j]
-                            if elem != '.':
-                                seen[int(elem)] = True
+                            if elem != 0:
+                                seen[elem] = True
 
                 get_candidates_from_row()
                 get_candidates_from_column()
@@ -120,7 +120,7 @@ class Solver:
 
             for candidate in get_candidates(start):
                 row, clmn = start
-                self.board[row][clmn] = str(candidate)
+                self.board[row][clmn] = candidate
 
                 self.empty_cells -= 1
                 if self.empty_cells == 0:
@@ -132,7 +132,7 @@ class Solver:
                         return  # we've fully solved the puzzle, there's no need to try other candidates
 
                     # reset the cell
-                    self.board[row][clmn] = '.'
+                    self.board[row][clmn] = 0
                     self.empty_cells += 1
 
         solve_cell(first_empty_cell)

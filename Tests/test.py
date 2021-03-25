@@ -1,5 +1,6 @@
 import unittest
-import SudokuSolver
+import src.SudokuSolver as SudokuSolver
+
 
 def puzzle_converter(puzzle):
     """
@@ -9,23 +10,24 @@ def puzzle_converter(puzzle):
 
     String is converted to List[List[str]] type taken by Solver class. Specifically each elem is either a digit
     (in str form) or a period. With 9 rows and each row having 9 elements.
-    :param string:
+    :param puzzle:
     :return List[List[str]]:
     """
 
     board = []
     row = []
     for elem in puzzle:
-        if elem == '0':
-            row.append('.')
+        if elem == '.':
+            row.append(0)
         else:
-            row.append(elem)
+            row.append(int(elem))
 
         if len(row) == 9:
             board.append(row)
             row = []
 
     return board
+
 
 class Easy(unittest.TestCase):
     def test_easy1(self):
