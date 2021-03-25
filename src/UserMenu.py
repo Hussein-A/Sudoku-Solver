@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import copy
+import Errors
 from typing import List
 
 
@@ -100,7 +101,7 @@ class UserMenu:
                     count = 0
 
             if not is_valid(grid):
-                raise Exception('Repeated digit in board.')
+                raise Errors.InputError('Repeated digits in board')
             return grid
 
         while True:
@@ -112,12 +113,9 @@ class UserMenu:
                     puzzle = values
                     format_and_verify_input()
                     break
-            except Exception as error:
-                error_window = sg.Window('ERROR',
-                                         [[sg.Text(error.args[0])], [sg.Button('OK')]])
-                error_event, error_values = error_window.read()
-                if error_event == sg.WIN_CLOSED or error_event == 'OK':
-                    continue
+            except Errors.Error:
+                Errors.Error.popup_error()
+
 
         # solution to puzzle will be given in a popup
         window.close()
